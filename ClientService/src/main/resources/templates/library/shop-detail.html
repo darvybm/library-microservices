@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <th:block th:insert="~{fragments/headerfiles.html :: headerfiles}" >...</th:block>
+        <title>Book House</title>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!--Header Start-->
+        <div th:replace="~{fragments/header.html :: header}">...</div>
+        <!--Header End-->
+
+
+        <!-- Single Page Header start -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Detalle de Libro</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-light">Inicio</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/books}" class="text-light">Catalogo</a></li>
+                <li class="breadcrumb-item active text-white" >Detalle de Libro</li>
+            </ol>
+        </div>
+        <!-- Single Page Header End -->
+
+
+        <!-- Single Product Start -->
+        <div class="container-fluid py-5 mt-5">
+            <div class="container py-5">
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-8 col-xl-9">
+                        <div class="row g-4">
+                            <div class="col-lg-6">
+                                <div class="border rounded">
+                                    <a href="#">
+                                        <img th:src="${book.cover}" class="img-fluid rounded" alt="Image">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <h4 th:text="${book.title}" class="fw-bold mb-3">Nombre</h4>
+                                <p th:text="${book.author}" class="mb-3">Autor: Nombre$</p>
+                                <h5 th:text="'$ ' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="fw-bold mb-3"></h5>
+                                <div class="d-flex mb-4">
+                                    <span th:if="${book.averageRating == 0}">No ha sido valorado aún</span>
+                                    <span th:if="${book.averageRating > 0}">
+                                        <i class="fa fa-star" th:classappend="${book.averageRating >= 1 ? 'text-secondary' : 'text-muted'}"></i>
+                                        <i class="fa fa-star" th:classappend="${book.averageRating >= 2 ? 'text-secondary' : 'text-muted'}"></i>
+                                        <i class="fa fa-star" th:classappend="${book.averageRating >= 3 ? 'text-secondary' : 'text-muted'}"></i>
+                                        <i class="fa fa-star" th:classappend="${book.averageRating >= 4 ? 'text-secondary' : 'text-muted'}"></i>
+                                        <i class="fa fa-star" th:classappend="${book.averageRating >= 5 ? 'text-secondary' : 'text-muted'}"></i>
+                                    </span>
+                                </div>
+                                <p class="mb-4" th:text="${book.description}">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
+                                <div class="input-group quantity mb-5" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm text-center border-0" value="1" id="quantity-input">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <form th:action="@{/cart/add}" method="post">
+                                    <input type="hidden" name="bookId" th:value="${book.id}" />
+                                    <input type="hidden" name="quantity" value="1" id="quantity-hidden"/>
+                                    <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-lg-12">
+                                <nav>
+                                    <div class="nav nav-tabs mb-3">
+                                        <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Descripción</button>
+                                        <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                            aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                                    </div>
+                                </nav>
+                                <div class="tab-content mb-5">
+                                    <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                        <p th:text="${book.description}">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.
+                                            Susp endisse ultricies nisi vel quam suscipit </p>
+                                    </div>
+                                    <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                        <div class="d-flex" th:each="review: ${reviews}">
+                                            <img src="/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
+                                            <div class="">
+                                                <div class="d-flex justify-content-between">
+                                                    <h5 th:text="${review.username}">Nombre</h5>
+                                                    <div class="d-flex mb-3">
+                                                        <span th:if="${review.rating > 0}">
+                                                            <i class="fa fa-star" th:classappend="${review.rating >= 1 ? 'text-secondary' : 'text-muted'}"></i>
+                                                            <i class="fa fa-star" th:classappend="${review.rating >= 2 ? 'text-secondary' : 'text-muted'}"></i>
+                                                            <i class="fa fa-star" th:classappend="${review.rating >= 3 ? 'text-secondary' : 'text-muted'}"></i>
+                                                            <i class="fa fa-star" th:classappend="${review.rating >= 4 ? 'text-secondary' : 'text-muted'}"></i>
+                                                            <i class="fa fa-star" th:classappend="${review.rating >= 5 ? 'text-secondary' : 'text-muted'}"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <p th:text="${review.comment}">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic
+                                                    words etc. Susp endisse ultricies nisi vel quam suscipit </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="nav-vision" role="tabpanel">
+                                        <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
+                                            amet diam et eos labore. 3</p>
+                                        <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore.
+                                            Clita erat ipsum et lorem et sit</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${user != null}">
+                                <form id="reviewForm" th:action="@{/books/{bookId}/review(bookId=${book.id})}" th:object="${newReview}" method="post">
+                                    <h4 class="mb-5 fw-bold">Deja un comentario</h4>
+                                    <div class="row g-4">
+                                        <div class="col-lg-6">
+                                            <div class="border-bottom rounded">
+                                                <input type="text" id="review-user" th:value="${user.username}" class="form-control border-0 me-4" placeholder="Tu Username *" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="border-bottom rounded my-4">
+                                                <textarea name="comment" id="review-comment" class="form-control border-0" cols="30" rows="8" placeholder="Tu Review *" spellcheck="false"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="d-flex justify-content-between py-3 mb-5">
+                                                <div class="d-flex align-items-center">
+                                                    <p class="mb-0 me-3">Da una calificación:</p>
+                                                    <select name="rating" class="form-select">
+                                                        <option value="0">0</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" onclick="submitReviewForm()" class="btn border border-secondary text-primary rounded-pill px-4 py-3"> Publicar Comentario</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="fw-bold mb-0">Libros relacionados </h1>
+                <div class="vesitable">
+                    <div class="owl-carousel vegetable-carousel justify-content-center">
+                        <div class="border border-primary rounded position-relative vesitable-item " th:each="book: ${books}" style="height: 450px;">
+                            <div class="vesitable-img" style="height: 50%;">
+                                <a th:href="@{/books/{id}(id=${book.id})}"> <img th:src="${book.cover}" class="img-fluid w-100 rounded-top" alt="Cover libro" style="height: 100%; object-fit: cover;"></a>
+                            </div>
+                            <div th:text="${book.genres[0]}" class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Género</div>
+                            <div class="p-4 rounded-bottom d-flex flex-column justify-content-between" style="height: 50%; overflow: hidden;">
+                                <h4><a th:text="${book.title}" th:href="@{/books/{id}(id=${book.id})}">Nombre</a></h4>
+                                <p th:text="${book.author}">Autor</p>
+                                <div class="d-flex justify-content-between flex-lg-wrap mt-auto">
+                                    <p th:text="'$ ' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="text-dark fs-5 fw-bold mb-0"></p>
+                                    <form th:action="@{/cart/add}" method="post">
+                                        <input type="hidden" name="bookId" th:value="${book.id}" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Single Product End -->
+
+
+        <!--Footer Start-->
+        <div th:replace="~{fragments/footer.html :: footer}">...</div>
+        <!--Footer End-->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const quantityInput = document.getElementById('quantity-input');
+                const quantityHidden = document.getElementById('quantity-hidden');
+                const btnPlus = document.querySelector('.btn-plus');
+                const btnMinus = document.querySelector('.btn-minus');
+
+                btnPlus.addEventListener('click', function() {
+                    let currentValue = parseInt(quantityInput.value);
+                    currentValue++;
+                    quantityInput.value = currentValue;
+                    quantityHidden.value = currentValue;
+                });
+
+                btnMinus.addEventListener('click', function() {
+                    let currentValue = parseInt(quantityInput.value);
+                    if (currentValue > 1) {
+                        currentValue--;
+                        quantityInput.value = currentValue;
+                        quantityHidden.value = currentValue;
+                    }
+                });
+            });
+        </script>
+        <script>
+            function submitReviewForm() {
+                var form = $('#reviewForm');
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(response) {
+                        // Redirigir en caso de éxito
+                        window.location.href = '/books/' + response.bookId;
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 403) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'No puedes dejar una reseña si no has comprado este libro.',
+                            });
+                        }
+                    }
+                });
+            }
+        </script>
+    </body>
+
+</html>

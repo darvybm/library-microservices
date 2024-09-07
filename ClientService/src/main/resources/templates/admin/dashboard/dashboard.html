@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/admin/headerfiles.html :: headerfiles}" >...</th:block>
+    <title>Admin - Book House</title>
+</head>
+<body class="sb-nav-fixed">
+<!--Top Nav Bar Start-->
+<div th:replace="~{fragments/admin/top-navbar.html :: top-nav-bar}">...</div>
+<!--Top Nav Bar End-->
+<div id="layoutSidenav">
+    <!--Side Nav Bar Start-->
+    <div th:replace="~{fragments/admin/sidenav-menu :: side-nav-menu}">...</div>
+    <!--Side Nav Bar End-->
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Dashboard</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+                <div class="row">
+                    <!-- Contadores -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div><i class="fas fa-shopping-cart"></i></div>
+                                    <div>
+                                        <h2 th:text="${ordersQuantity}">0</h2>
+                                        <p>Órdenes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div><i class="fas fa-book"></i></div>
+                                    <div>
+                                        <h2 th:text="${genresQuantity}">0</h2>
+                                        <p>Géneros</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div><i class="fas fa-book-open"></i></div>
+                                    <div>
+                                        <h2 th:text="${booksQuantity}">0</h2>
+                                        <p>Libros</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-danger text-white mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div><i class="fas fa-users"></i></div>
+                                    <div>
+                                        <h2 th:text="${userQuantity}">0</h2>
+                                        <p>Usuarios</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Ventas Realizar Por Día
+                            </div>
+                            <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-bar me-1"></i>
+                                Géneros Más Comprados
+                            </div>
+                            <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Compras Realizadas
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Cant. Productos</th>
+                                    <th scope="col">Usuario</th>
+                                    <th scope="col">Dirección Facturación</th>
+                                    <th scope="col">Método de envío</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Cant. Productos</th>
+                                    <th scope="col">Usuario</th>
+                                    <th scope="col">Dirección Facturación</th>
+                                    <th scope="col">Método de envío</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr th:each="order: ${orders}">
+                                    <td th:text="${order.createDate}">Fecha</td>
+                                    <td th:text="${order.cartItems.size()}">Cant. Productos</td>
+                                    <td th:text="${order.user.username}">Usuario</td>
+                                    <td th:text="${order.billingAddress}">Dirección Facturación</td>
+                                    <td th:text="${order.deliveryMethod}">Método de envío</td>
+                                    <td th:text="${order.status}">Estado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--Footer Start-->
+        <div th:replace="~{fragments/admin/footer.html :: footer}">...</div>
+        <!--Footer End-->
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="/assets/demo/chart-area-demo.js"></script>
+<script src="/assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script src="/js/datatables-simple-demo.js"></script>
+
+<script th:inline="javascript">
+
+    // Set new default font family and font color to mimic Bootstrap's default styling
+    Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#292b2c';
+
+    // Obtener datos desde el modelo de Thymeleaf
+    const areaLabels = /*[[${areaLabels}]]*/ [];
+    const areaData = /*[[${areaData}]]*/ [];
+    const barLabels = /*[[${barLabels}]]*/ [];
+    const barData = /*[[${barData}]]*/ [];
+
+    // Area Chart Example
+    var ctx = document.getElementById("myAreaChart");
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: areaLabels,
+            datasets: [{
+                label: "Ventas",
+                lineTension: 0.3,
+                backgroundColor: "rgba(2,117,216,0.2)",
+                borderColor: "rgba(2,117,216,1)",
+                pointRadius: 5,
+                pointBackgroundColor: "rgba(2,117,216,1)",
+                pointBorderColor: "rgba(255,255,255,0.8)",
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                pointHitRadius: 50,
+                pointBorderWidth: 2,
+                data: areaData,
+            }],
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'date'
+                    },
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 7
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: Math.max(...areaData) + 10,
+                        maxTicksLimit: 5
+                    },
+                    gridLines: {
+                        color: "rgba(0, 0, 0, .125)",
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    // Bar Chart Example
+    var ctxBar = document.getElementById("myBarChart");
+    var myBarChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: barLabels,
+            datasets: [{
+                label: "Compras",
+                backgroundColor: "rgba(2,117,216,1)",
+                borderColor: "rgba(2,117,216,1)",
+                data: barData,
+            }],
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 6
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: Math.max(...barData) + 10,
+                        maxTicksLimit: 5
+                    },
+                    gridLines: {
+                        display: true
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+</script>
+</body>
+</html>

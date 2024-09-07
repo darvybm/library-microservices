@@ -1,0 +1,81 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.1'
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'pucmm.eict.library'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2023.0.2")
+}
+
+dependencies {
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+//	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+
+	// Datafaker
+	implementation 'net.datafaker:datafaker:2.3.0'
+
+	// Validation API
+	implementation 'jakarta.validation:jakarta.validation-api:3.1.0-M1'
+
+	// Jasypt para encriptación
+	// https://mvnrepository.com/artifact/org.jasypt/jasypt
+	implementation group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+
+	// Paypal
+	implementation group: 'com.paypal.sdk', name: 'paypal-core', version: '1.7.2'
+
+	// https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk
+	implementation group: 'com.paypal.sdk', name: 'rest-api-sdk', version: '1.14.0'
+
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

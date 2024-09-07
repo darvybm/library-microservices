@@ -1,0 +1,96 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="invoice" language="java" columnCount="1" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="123e4567-e89b-12d3-a456-426614174000">
+    <parameter name="orderId" class="java.lang.Long"/>
+    <parameter name="userId" class="java.lang.String"/>
+    <parameter name="totalPrice" class="java.lang.Double"/>
+    <parameter name="address" class="java.lang.String"/>
+    <parameter name="paymentMethod" class="java.lang.String"/>
+    <parameter name="billingAddress" class="java.lang.String"/>
+    <parameter name="deliveryMethod" class="java.lang.String"/>
+    <parameter name="status" class="java.lang.String"/>
+    <parameter name="createDate" class="java.time.LocalDateTime"/>
+    <parameter name="username" class="java.lang.String"/>
+    <parameter name="email" class="java.lang.String"/>
+    <field name="title" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.Integer"/>
+    <field name="author" class="java.lang.String"/>
+    <field name="price" class="java.lang.Double"/>
+    <field name="totalPrice" class="java.lang.Double"/>
+    <title splitType="Stretch"/>
+    <pageHeader height="240" splitType="Stretch">
+        <element kind="staticText" uuid="123e4567-e89b-12d3-a456-426614174001" stretchType="NoStretch" x="295" y="-30" width="199" height="70" forecolor="#2D3538" fontSize="40.0" bold="true" italic="true" underline="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[Invoice]]></text>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174014" stretchType="NoStretch" x="295" y="100" width="214" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Username: " + $P{username}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174005" stretchType="NoStretch" x="295" y="80" width="214" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Address: " + $P{address}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174002" stretchType="NoStretch" x="295" y="50" width="215" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Order ID: " + $P{orderId}]]></expression>
+        </element>
+        <element kind="image" uuid="cf446b47-5893-4813-96e2-d3477b54d702" x="0" y="-20" width="170" height="80">
+            <expression><![CDATA["Group 2.png"]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174015" stretchType="NoStretch" x="0" y="210" width="255" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Email: " + $P{email}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174006" stretchType="NoStretch" x="0" y="130" width="255" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Payment Method: " + $P{paymentMethod}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174007" stretchType="NoStretch" x="0" y="150" width="255" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Billing Address: " + $P{billingAddress}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174008" stretchType="NoStretch" x="0" y="170" width="255" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Delivery Method: " + $P{deliveryMethod}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174009" stretchType="NoStretch" x="0" y="190" width="255" height="20" fontSize="12.0" bold="true">
+            <expression><![CDATA["Status: " + $P{status}]]></expression>
+        </element>
+    </pageHeader>
+    <columnHeader height="40" splitType="Stretch">
+        <element kind="staticText" uuid="123e4567-e89b-12d3-a456-426614174021" stretchType="NoStretch" mode="Opaque" x="0" y="0" width="150" height="20" forecolor="#FFFFFF" backcolor="#A37A5C" fontSize="12.0" bold="true">
+            <text><![CDATA[Title]]></text>
+        </element>
+        <element kind="staticText" uuid="123e4567-e89b-12d3-a456-426614174022" stretchType="NoStretch" mode="Opaque" x="150" y="0" width="105" height="20" forecolor="#FFFFFF" backcolor="#A37A5C" fontSize="12.0" bold="true">
+            <text><![CDATA[Author]]></text>
+        </element>
+        <element kind="staticText" uuid="123e4567-e89b-12d3-a456-426614174023" stretchType="NoStretch" mode="Opaque" x="255" y="0" width="100" height="20" forecolor="#FFFFFF" backcolor="#A37A5C" fontSize="12.0" bold="true">
+            <text><![CDATA[Price]]></text>
+        </element>
+        <element kind="staticText" uuid="123e4567-e89b-12d3-a456-426614174024" stretchType="NoStretch" mode="Opaque" x="355" y="0" width="70" height="20" forecolor="#FFFFFF" backcolor="#A37A5C" fontSize="12.0" bold="true">
+            <text><![CDATA[Quantity]]></text>
+        </element>
+        <element kind="staticText" uuid="123e4567-e89b-12d3-a456-426614174025" stretchType="NoStretch" mode="Opaque" x="425" y="0" width="85" height="20" forecolor="#FFFFFF" backcolor="#A37A5C" fontSize="12.0" bold="true">
+            <text><![CDATA[Total Price]]></text>
+        </element>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174026" stretchType="NoStretch" x="0" y="0" width="150" height="20" fontSize="12.0">
+                <expression><![CDATA[$F{title}]]></expression>
+            </element>
+            <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174027" stretchType="NoStretch" x="150" y="0" width="105" height="20" fontSize="12.0">
+                <expression><![CDATA[$F{author}]]></expression>
+            </element>
+            <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174028" stretchType="NoStretch" x="255" y="0" width="100" height="20" fontSize="12.0">
+                <expression><![CDATA["$" + $F{price}]]></expression>
+            </element>
+            <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174029" stretchType="NoStretch" x="355" y="0" width="70" height="20" fontSize="12.0">
+                <expression><![CDATA[$F{quantity}]]></expression>
+            </element>
+            <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174030" stretchType="NoStretch" x="425" y="0" width="85" height="20" fontSize="12.0">
+                <expression><![CDATA["$" + $F{totalPrice}]]></expression>
+            </element>
+        </band>
+    </detail>
+    <pageFooter height="130" splitType="Stretch">
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174031" stretchType="NoStretch" mode="Opaque" x="0" y="110" width="509" height="20" forecolor="#FFFFFF" backcolor="#374633" fontSize="12.0" bold="true" hTextAlign="Right">
+            <expression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{MASTER_TOTAL_PAGES}]]></expression>
+        </element>
+        <element kind="textField" uuid="123e4567-e89b-12d3-a456-426614174004" stretchType="NoStretch" mode="Opaque" x="300" y="60" width="210" height="20" forecolor="#FFFFFF" backcolor="#374633" fontSize="12.0" bold="true" hTextAlign="Right">
+            <expression><![CDATA["Total Price: $" + $P{totalPrice}]]></expression>
+        </element>
+    </pageFooter>
+</jasperReport>

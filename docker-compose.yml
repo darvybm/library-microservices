@@ -1,0 +1,214 @@
+version: '3.9'
+
+networks:
+    my-network:
+
+services:
+
+    # Eureka Server
+    discovery-server:
+        build: ./DiscoveryServer
+        restart: on-failure
+        ports:
+            - "${EUREKA_PORT}:${EUREKA_PORT}"
+        networks:
+            - my-network
+        healthcheck:
+            test: "exit 0"
+        env_file:
+            -   .env
+
+    # Config Server
+    config-server:
+        build: ./ConfigServer
+        restart: on-failure
+        ports:
+            - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+        environment:
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            discovery-server:
+                condition: service_healthy
+        links:
+            - discovery-server
+        healthcheck:
+            test: "exit 0"
+        env_file:
+            - .env
+
+    # Auth Service
+    auth-service:
+        build: ./AuthService
+        restart: on-failure
+        environment:
+            - SPRING_DATA_MONGODB_URI=${MONGO_URI}${MONGO_AUTH_DB}?retryWrites=true&w=majority&appName=LibraryCluster
+            - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${EUREKA_PORT}/eureka/
+            - SPRING_CLOUD_CONFIG_URI=http://config-server:${CONFIG_SERVER_PORT}/
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            config-server:
+                condition: service_healthy
+            discovery-server:
+                condition: service_healthy
+        links:
+            - config-server
+        deploy:
+            replicas: 2
+        env_file:
+            - .env
+
+    # Cart Service
+    cart-service:
+        build: ./CartService
+        restart: on-failure
+        environment:
+            - SPRING_DATASOURCE_URL=${MYSQL_URL}${MYSQL_SHOPPING_CART_DB}?useSSL=false
+            - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+            - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+            - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${EUREKA_PORT}/eureka/
+            - SPRING_CLOUD_CONFIG_URI=http://config-server:${CONFIG_SERVER_PORT}/
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            config-server:
+                condition: service_healthy
+        links:
+            - config-server
+        deploy:
+            replicas: 2
+        env_file:
+            - .env
+
+    # Catalogue Service
+    catalogue-service:
+        build: ./CatalogueService
+        restart: on-failure
+        environment:
+            - SPRING_DATA_MONGODB_URI=${MONGO_URI}${MONGO_CATALOGUE_DB}?retryWrites=true&w=majority&appName=LibraryCluster
+            - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${EUREKA_PORT}/eureka/
+            - SPRING_CLOUD_CONFIG_URI=http://config-server:${CONFIG_SERVER_PORT}/
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            config-server:
+                condition: service_healthy
+        links:
+            - config-server
+        deploy:
+            replicas: 2
+        env_file:
+            - .env
+
+    # Notification Service
+    notification-service:
+        build: ./NotificationService
+        restart: on-failure
+        environment:
+            - SPRING_DATA_MONGODB_URI=${MONGO_URI}${MONGO_NOTIFICATION_DB}?retryWrites=true&w=majority&appName=LibraryCluster
+            - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${EUREKA_PORT}/eureka/
+            - SPRING_CLOUD_CONFIG_URI=http://config-server:${CONFIG_SERVER_PORT}/
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            config-server:
+                condition: service_healthy
+        links:
+            - config-server
+        deploy:
+            replicas: 2
+        env_file:
+            - .env
+
+    # Review Service
+    review-service:
+        build: ./ReviewService
+        restart: on-failure
+        environment:
+            - SPRING_DATASOURCE_URL=${MYSQL_URL}${MYSQL_REVIEW_DB}?useSSL=false
+            - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+            - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+            - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${EUREKA_PORT}/eureka/
+            - SPRING_CLOUD_CONFIG_URI=http://config-server:${CONFIG_SERVER_PORT}/
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            config-server:
+                condition: service_healthy
+        links:
+            - config-server
+        deploy:
+            replicas: 2
+        env_file:
+            - .env
+
+    # Gateway
+    gateway:
+        build: ./GatewayService
+        restart: on-failure
+        ports:
+            - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+        environment:
+            - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${EUREKA_PORT}/eureka/
+            - SPRING_CLOUD_CONFIG_URI=http://config-server:${CONFIG_SERVER_PORT}/
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+        networks:
+            - my-network
+        depends_on:
+            config-server:
+                condition: service_healthy
+        links:
+            - config-server
+        healthcheck:
+            test: "exit 0"
+        env_file:
+            - .env
+
+
+    # Client Service
+    client-service:
+        build: ./ClientService
+        restart: on-failure
+        ports:
+            - "${CLIENT_PORT}:${CLIENT_PORT}"
+        environment:
+            - GATEWAY_URL=http://gateway:${GATEWAY_PORT}
+            - MANAGEMENT.ZIPKIN.TRACING.ENDPOINT=http://zipkin:9411/api/v2/spans
+            - SPRING_APPLICATION_NAME=ClientService
+            - SPRING_CLOUD_CONFIG_ENABLED=false
+            - API_GATEWAY_URL=http://gateway:${GATEWAY_PORT}
+            - SERVER_PORT=8081
+            - CRYPTO_SECRET_KEY=${CRYPTO_SECRET_KEY}
+            - MANAGEMENT_TRACING_SAMPLING_PROBABILITY=1.0
+            - CLIENT_URL=http://client-service:8081
+            - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+            - PAYPAL_CLIENT_SECRET=${PAYPAL_CLIENT_SECRET}
+            - PAYPAL_MODE=sandbox
+            - SERVER_ERROR_WHITELABEL_ENABLED=false
+            - SERVER_ERROR_PATH=/error
+        networks:
+            - my-network
+        depends_on:
+            gateway:
+                condition: service_healthy
+        links:
+            - gateway
+        env_file:
+            - .env
+
+    zipkin:
+        image: openzipkin/zipkin:latest
+        restart: always
+        ports:
+            - "9411:9411"
+        networks:
+            my-network:
+        env_file:
+            - .env

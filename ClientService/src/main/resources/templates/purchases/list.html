@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:insert="~{fragments/headerfiles.html :: headerfiles}" >...</th:block>
+    <title>Book House</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+<!-- Spinner Start -->
+<div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+</div>
+<!-- Spinner End -->
+
+
+<!--Header Start-->
+<div th:replace="~{fragments/header.html :: header}">...</div>
+<!--Header End-->
+
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Listado de Compras</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a th:href="@{/}" class="text-light">Inicio</a></li>
+        <li class="breadcrumb-item active text-white">Compras</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+
+<!-- Compras Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Cant. Productos</th>
+                    <th th:if="${isAdmin == true}" scope="col">Usuario</th>
+                    <th scope="col">Dirección Facturación</th>
+                    <th scope="col">Método de envío</th>
+                    <th scope="col">Estado</th>
+<!--                    <th>Acciones</th>-->
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Cant. Productos</th>
+                    <th th:if="${isAdmin == true}" scope="col">Usuario</th>
+                    <th scope="col">Dirección Facturación</th>
+                    <th scope="col">Método de envío</th>
+                    <th scope="col">Estado</th>
+<!--                    <th>Acciones</th>-->
+                </tr>
+                </tfoot>
+                <tbody>
+                <tr th:each="order: ${orders}">
+                    <td th:text="${order.createDate}">Fecha</td>
+                    <td th:text="${order.cartItems.size()}">Cant. Productos</td>
+                    <td th:if="${isAdmin == true}" th:text="${order.userId}">Usuario</td>
+                    <td th:text="${order.billingAddress}">Dirección Facturación</td>
+                    <td th:text="${order.deliveryMethod}">Método de envío</td>
+                    <td th:text="${order.status}">Estado</td>
+<!--                    <td>-->
+<!--                        <a class="btn btn-outline-info"-->
+
+<!--                        >-->
+<!--                            Ver-->
+<!--                        </a>-->
+<!--                    </td>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--Compras Page End -->
+
+
+<!--Footer Start-->
+<div th:replace="~{fragments/footer.html :: footer}">...</div>
+<!--Footer End-->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/lib/easing/easing.min.js"></script>
+<script src="/lib/waypoints/waypoints.min.js"></script>
+<script src="/lib/lightbox/js/lightbox.min.js"></script>
+<script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Template Javascript -->
+<script src="/js/main.js"></script>
+
+<script src="/js/datatables-simple-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

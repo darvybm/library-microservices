@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:insert="~{fragments/headerfiles.html :: headerfiles}" >...</th:block>
+    <title>Cancelación - Book House</title>
+</head>
+
+<body>
+<!--Header Start-->
+<div th:replace="~{fragments/header.html :: header}">...</div>
+<!--Header End-->
+
+<!-- Confirmation Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Confirmación</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a th:href="@{/}" class="text-light">Inicio</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/cart}" class="text-light">Carrito de Compras</a></li>
+        <li class="breadcrumb-item active text-white">Cancelación</li>
+    </ol>
+</div>
+<!-- Confirmation Page Header End -->
+
+<!-- Confirmation Information Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <i class="bi bi-x-circle display-1 text-warning"></i>
+                <h1 class="display-1">Pago Cancelado</h1>
+                <h1 class="mb-4">Tu orden ha sido cancelada.</h1>
+                <p class="mb-4">Tu orden ha sido cancelada exitosamente. Vuelve a la página principal.</p>
+                <a class="btn border-secondary rounded-pill py-3 px-5" th:href="@{/}">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Confirmation Information End -->
+
+<!--Footer Start-->
+<div th:replace="~{fragments/footer.html :: footer}">...</div>
+<!--Footer End-->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+
+<!-- JavaScript Libraries and Template Javascript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/lib/easing/easing.min.js"></script>
+<script src="/lib/waypoints/waypoints.min.js"></script>
+<script src="/lib/lightbox/js/lightbox.min.js"></script>
+<script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+
+</html>

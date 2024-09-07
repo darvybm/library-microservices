@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Register - Book House</title>
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png" />
+
+</head>
+<body class="auth-page">
+<div class="bg-overlay"></div>
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Crear Cuenta</h3></div>
+                            <div class="card-body">
+                                <form id="registerForm" th:action="@{/register}" method="post" th:object="${registerDTO}">
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input class="form-control" id="inputUsername" type="text" placeholder="Entra el nombre de usuario" th:field="*{username}" />
+                                                <label for="inputUsername">Nombre de Usuario</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" th:field="*{email}" />
+                                        <label for="inputEmail">Correo electrónico</label>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input class="form-control" id="inputPassword" type="password" placeholder="Create a password" th:field="*{password}" />
+                                                <label for="inputPassword">Contraseña</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input class="form-control" id="inputPasswordConfirm" type="password" placeholder="Confirm password"  />
+                                                <label for="inputPasswordConfirm">Confirma Contraseña</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 mb-0">
+                                        <div class="d-grid"><button class="btn btn-primary btn-block" type="submit">Crear Cuenta</button></div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-footer text-center py-3">
+                                <div class="small"><a style="text-decoration: none; color: #0f5132" th:href="@{/login}">¿Tienes una cuenta? Inicia sesión</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="layoutAuthentication_footer">
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Book House 2024</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $('#registerForm').on('submit', function (e) {
+            e.preventDefault();
+
+            // Obteniendo los valores de los campos del formulario
+            var username = $('#inputUsername').val();
+            var email = $('#inputEmail').val();
+            var password = $('#inputPassword').val();
+            var passwordConfirm = $('#inputPasswordConfirm').val();
+
+            // Realiza las validaciones
+            if (username.length < 3 || username.length > 50) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'El nombre de usuario debe tener entre 3 y 50 caracteres.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            var passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=\-_]).*$/;
+            if (!passwordPattern.test(password)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La contraseña debe contener al menos un dígito, una letra minúscula, una letra mayúscula y un carácter especial.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            if (password.length < 6) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La contraseña debe tener al menos 6 caracteres.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Las contraseñas no coinciden.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Por favor, introduce un correo electrónico válido.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Si todas las validaciones pasan, envía el formulario con AJAX
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: response,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/login'; // Redirige al login después de cerrar el SweetAlert
+                    });
+                },
+                error: function (xhr) {
+                    var errors = xhr.responseJSON;
+                    var errorMsg = '';
+
+                    // Recorre y muestra los errores de validación
+                    errors.forEach(function (error) {
+                        errorMsg += error.defaultMessage + '<br>';
+                    });
+
+                    Swal.fire({
+                        title: 'Error',
+                        html: errorMsg,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>

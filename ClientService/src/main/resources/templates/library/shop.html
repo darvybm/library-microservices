@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <th:block th:insert="~{fragments/headerfiles.html :: headerfiles}" >...</th:block>
+        <title>Book House</title>
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!--Header Start-->
+        <div th:replace="~{fragments/header.html :: header}">...</div>
+        <!--Header End-->
+
+
+        <!-- Single Page Header start -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Catalogo</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-light">Inicio</a></li>
+                <li class="breadcrumb-item active text-white">Catalogo</li>
+            </ol>
+        </div>
+        <!-- Single Page Header End -->
+
+
+        <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite py-5">
+            <div class="container py-5">
+                <h1 class="mb-4">Catálogo de libros</h1>
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <form method="get" th:action="@{/books}" id="filterForm">
+                            <div class="row g-4 justify-content-between">
+                                <div class="col-xl-5">
+                                    <div class="input-group w-100 mx-auto d-flex">
+                                        <input type="search" name="search" class="form-control p-3" placeholder="Busca por Titulo o por Autor" aria-describedby="search-icon-1" th:value="${searchQuery}">
+                                        <button id="search-icon-1" class="input-group-text p-3" type="submit"><i class="fa fa-search"></i></button>
+                                        <a href="/books" class="btn btn-outline-secondary p-3 ms-2">Eliminar Filtros</a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3">
+                                    <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                        <label for="order">Orden:</label>
+                                        <select id="order" name="order" class="border-0 form-select-sm bg-light me-3" th:value="${order}" onchange="document.getElementById('filterForm').submit();">
+                                            <option value="none" th:selected="${order == null or order == 'none'}">Ninguno</option>
+                                            <option value="a-z" th:selected="${order == 'a-z'}">A-Z</option>
+                                            <option value="z-a" th:selected="${order == 'z-a'}">Z-A</option>
+                                            <option value="low-to-high" th:selected="${order == 'low-to-high'}">Precio bajo a precio alto</option>
+                                            <option value="high-to-low" th:selected="${order == 'high-to-low'}">Precio alto a precio bajo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row g-4">
+                            <div class="col-lg-3">
+                                <div class="row g-4">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <h4>Géneros</h4>
+                                            <ul class="list-unstyled fruite-categorie">
+                                                <li>
+                                                    <div class="d-flex justify-content-between fruite-name" th:each="genre: ${genres}">
+                                                        <a th:href="@{/books(genre=${genre})}" th:text="${genre}"><i class="fa-solid fa-book"></i>Genre</a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div th:if="${#lists.isEmpty(books)}">
+                                    <h2 class="text-center mt-5">No hay libros que coincidan con tu búsqueda</h2>
+                                </div>
+                                <div class="row g-4 justify-content-center" id="book-container">
+                                    <div class="col-md-6 col-lg-6 col-xl-4" th:each="book: ${books}">
+                                        <div class="rounded position-relative fruite-item d-flex flex-column" style="height: 100%; max-height: 500px;">
+                                            <div class="fruite-img"  style="flex: 1 0 60%; position: relative;">
+                                                <a th:href="@{/books/{id}(id=${book.id})}"><img th:src="${book.cover}" class="img-fluid w-100 rounded-top" alt="" style="height: 100%; object-fit: cover;"></a>
+                                            </div>
+                                            <div th:text="${book.genres[0]}" class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Género</div>
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column justify-content-between" style="flex: 1 0 40%; overflow: hidden;">
+                                                <h4 class="book-title">
+                                                    <a th:text="${book.title}" th:href="@{/books/{id}(id=${book.id})}" >Nombre</a>
+                                                </h4>
+                                                <p th:text="${book.author}">Autor</p>
+                                                <div class="d-flex justify-content-between flex-lg-wrap mt-auto">
+                                                    <p th:text="'$' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="text-dark fs-6 fw-bold mb-0"></p>
+                                                    <form th:action="@{/cart/add}" method="post">
+                                                        <input type="hidden" name="bookId" th:value="${book.id}" />
+                                                        <input type="hidden" name="quantity" value="1" />
+                                                        <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+<!--                                <div class="col-12">-->
+<!--                                    <div class="pagination d-flex justify-content-center mt-5"  id="pagination-container">-->
+<!--                                        <a href="#" class="rounded">&laquo;</a>-->
+<!--                                        <a href="#" class="active rounded">1</a>-->
+<!--                                        <a href="#" class="rounded">2</a>-->
+<!--                                        <a href="#" class="rounded">3</a>-->
+<!--                                        <a href="#" class="rounded">4</a>-->
+<!--                                        <a href="#" class="rounded">5</a>-->
+<!--                                        <a href="#" class="rounded">6</a>-->
+<!--                                        <a href="#" class="rounded">&raquo;</a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+
+
+
+
+        <!--Footer Start-->
+        <div th:replace="~{fragments/footer.html :: footer}">...</div>
+        <!--Footer End-->
+
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+        <script>
+            function adjustFontSize(element, maxFontSize, minFontSize) {
+                let fontSize = maxFontSize;
+                element.style.fontSize = fontSize + 'px';
+
+                while (element.scrollWidth > element.offsetWidth && fontSize > minFontSize) {
+                    fontSize -= 1;
+                    element.style.fontSize = fontSize + 'px';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const titles = document.querySelectorAll('.title-link');
+                titles.forEach(title => {
+                    adjustFontSize(title, 20, 10); // Ajusta estos valores según tus necesidades
+                });
+            });
+        </script>
+    </body>
+
+</html>

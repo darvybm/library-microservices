@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/admin/headerfiles.html :: headerfiles}" >...</th:block>
+    <title>Admin - Book House</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="@@path/vendor/countup.js/dist/countUp.umd.js"></script>
+
+</head>
+<body class="sb-nav-fixed">
+<!--Top Nav Bar Start-->
+<div th:replace="~{fragments/admin/top-navbar.html :: top-nav-bar}">...</div>
+<!--Top Nav Bar End-->
+<div id="layoutSidenav">
+    <!--Side Nav Bar Start-->
+    <div th:replace="~{fragments/admin/sidenav-menu :: side-nav-menu}">...</div>
+    <!--Side Nav Bar End-->
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Usuarios</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}" class="text-dark" style="text-decoration: none">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Usuarios</li>
+                </ol>
+                <a class="btn btn-primary mb-3" th:href="@{/admin/users/create}">Crear Usuario</a>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Lista de todos los usuarios
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Correo</th>
+                                <th scope="col">Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Correo</th>
+                                <th scope="col">Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            <tr th:each="user: ${users}">
+                                <th th:text="${user.id}" scope="col">ID</th>
+                                <th th:text="${user.username}" scope="col">Username</th>
+                                <th th:text="${user.email}" scope="col">Correo</th>
+                                <th th:text="${user.role}" scope="col">Rol</th>
+                                <td>
+                                    <a class="btn btn-outline-info"
+                                       th:onclick="confirmChangeRole([[${user.id}]])"
+                                    >
+                                        Edit Role
+                                    </a>
+                                    <a class="btn btn-outline-danger"
+                                       th:onclick="confirmDelete([[${user.id}]])"
+                                    >
+                                        Eliminar
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--Footer Start-->
+        <div th:replace="~{fragments/admin/footer.html :: footer}">...</div>
+        <!--Footer End-->
+    </div>
+</div>
+<!--Agregar jquery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="/assets/demo/chart-area-demo.js"></script>
+<script src="/assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script src="/js/datatables-simple-demo.js"></script>
+<script>
+    function confirmDelete(id) {
+        Swal.fire({
+            title: "¿Estás seguro de eliminar este Usuario?",
+            text: "Los datos del usuario serán eliminados.",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar Usuario'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteMock(id);
+            }
+        });
+    }
+
+    function deleteMock(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/admin/users/delete/' + id,
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Usuario eliminado con éxito!',
+                    text: response,
+                }).then(() => {
+                    window.location.href = "/admin/users";
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al eliminar el usuario',
+                    text: xhr.responseText,
+                });
+            }
+        });
+    }
+
+    function confirmChangeRole(id) {
+        Swal.fire({
+            title: "¿Estás seguro de cambiar el rol de este Usuario?",
+            text: "El rol del usuario será actualizado.",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Cambiar Rol'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                changeRoleMock(id);
+            }
+        });
+    }
+
+    function changeRoleMock(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/admin/users/change-role/' + id,
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Rol del usuario cambiado con éxito!',
+                    text: response,
+                }).then(() => {
+                    window.location.href = "/admin/users";
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al cambiar el rol del usuario',
+                    text: xhr.responseText,
+                });
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

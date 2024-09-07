@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:insert="~{fragments/headerfiles.html :: headerfiles}" >...</th:block>
+        <title>Book House</title>
+    </head>
+
+    <body>
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+        <!--Header Start-->
+        <div th:replace="~{fragments/header.html :: header}">...</div>
+        <!--Header End-->
+
+
+        <!-- Hero Start -->
+        <div class="container-fluid py-5 mb-5 hero-header">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-md-12 col-lg-7">
+                        <h4 class="mb-3 text-light">¡Encuentra tu próxima gran lectura!</h4>
+                        <h1 class="mb-5 display-3 text-primary">Tu Librería Digital Favorita</h1>
+<!--                        <div class="position-relative mx-auto">-->
+<!--                            <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number" placeholder="Search">-->
+<!--                            <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="col-md-12 col-lg-5">
+                        <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
+                            <div class="carousel-inner shadow-sm" role="listbox">
+                                <div class="carousel-item active rounded">
+                                    <img src="/img/Group%2013hero_img_.png" class="img-fluid w-100 h-100 bg-secondary rounded" alt="Libros de misterio">
+                                    <a href="#" class="btn btn-primary px-4 py-2 text-white rounded">Misterio</a>
+                                </div>
+                                <div class="carousel-item rounded">
+                                    <img src="/img/Group%2014hero_img_.png" class="img-fluid w-100 h-100 rounded" alt="Libros de ciencia ficción">
+                                    <a href="#" class="btn btn-primary px-4 py-2 text-white rounded">Ciencia Ficción</a>
+                                </div>
+                                <div class="carousel-item rounded">
+                                    <img src="/img/Group%2015hero_img_.png" class="img-fluid w-100 h-100 rounded" alt="Libros de motivación">
+                                    <a href="#" class="btn btn-primary px-4 py-2 text-white rounded">Motivación</a>
+                                </div>
+                                <div class="carousel-item rounded">
+                                    <img src="/img/Group%2016hero_img_.png" class="img-fluid w-100 h-100 rounded" alt="Libros de romance">
+                                    <a href="#" class="btn btn-primary px-4 py-2 text-white rounded">Romance</a>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hero End -->
+
+
+        <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite py-5">
+            <div class="container py-5">
+                <div class="tab-class text-center">
+                    <div class="row g-4">
+                        <div class="col-lg-4 text-start">
+                            <h1>Libros recomendados</h1>
+                        </div>
+                        <div class="col-lg-8 text-end">
+                            <ul class="nav nav-pills d-inline-flex text-center mb-5">
+                                <li class="nav-item">
+                                    <a class="d-flex m-2 py-2 bg-light rounded-pill" th:href="@{/}" th:classappend="${selectedGenre == 'Todos'} ? ' active'">
+                                    <span class="text-dark" style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; padding: 3px;">
+                                        Todos
+                                    </span>
+                                    </a>
+                                </li>
+                                <th:block th:each="genre, iterStat : ${genres}">
+                                    <li class="nav-item">
+                                        <a class="d-flex m-2 py-2 bg-light rounded-pill"
+                                           th:href="@{/(genre=${genre})}"
+                                           th:classappend="${selectedGenre == genre} ? ' active'">
+                                      <span class="text-dark" style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; padding: 3px;"
+                                            th:text="${genre}">Genre Name</span>
+                                        </a>
+                                    </li>
+                                </th:block>
+                            </ul>
+                        </div>
+
+
+                    </div>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane fade show p-0 active">
+                            <div class="row g-4">
+                                <div class="col-lg-12">
+                                    <div class="row g-4">
+                                        <div class="col-md-6 col-lg-4 col-xl-3" th:each="book: ${books}">
+                                            <div class="rounded position-relative fruite-item" style="height: 450px;">
+                                                <div class="fruite-img" style="height: 50%;">
+                                                    <a th:href="@{/books/{id}(id=${book.id})}"><img th:src="${book.cover}" class="img-fluid w-100 rounded-top" style="height: 100%; object-fit: cover;" alt=""></a>
+                                                </div>
+                                                <div th:text="${book.genres[0]}" class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Genre</div>
+                                                <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column justify-content-between" style="height: 50%;">
+                                                    <div class="flex-grow-1">
+                                                        <h4 class="book-title">
+                                                            <a th:text="${book.title}" th:href="@{/books/{id}(id=${book.id})}">Nombre</a>
+                                                        </h4>
+                                                        <p th:text="${book.author}">Autor</p>
+                                                    </div>
+                                                    <div class="mt-auto">
+                                                        <p th:text="'$' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="text-dark fs-5 fw-bold mb-2"></p>
+                                                        <form th:action="@{/cart/add}" method="post">
+                                                            <input type="hidden" name="bookId" th:value="${book.id}" />
+                                                            <input type="hidden" name="quantity" value="1" />
+                                                            <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary w-100">
+                                                                <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>      
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+
+
+<!--        &lt;!&ndash; Featurs Start &ndash;&gt;-->
+<!--        <div class="container-fluid service py-5">-->
+<!--            <div class="container py-5">-->
+<!--                <div class="row g-4 justify-content-center">-->
+<!--                    <div class="col-md-6 col-lg-4">-->
+<!--                        <a href="#">-->
+<!--                            <div class="service-item bg-secondary rounded border border-secondary">-->
+<!--                                <img src="/img/scifi_cover.jpg" class="img-fluid rounded-top w-100" alt="Sci-Fi Cover" style="max-width: 500px; max-height: 500px; object-fit: cover;">-->
+<!--                                <div class="px-4 rounded-bottom">-->
+<!--                                    <div class="service-content bg-primary text-center p-4 rounded">-->
+<!--                                        <h5 class="text-white">Ciencia Ficción</h5>-->
+<!--                                        <h3 class="text-white mb-0">20% OFF</h3>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 col-lg-4">-->
+<!--                        <a href="#">-->
+<!--                            <div class="service-item bg-dark rounded border border-dark">-->
+<!--                                <img src="/img/motivacion_cover.jpg" class="img-fluid rounded-top w-100" alt="" style="max-width: 500px; max-height: 500px; object-fit: cover;">-->
+<!--                                <div class="px-4 rounded-bottom">-->
+<!--                                    <div class="service-content bg-light text-center p-4 rounded">-->
+<!--                                        <h5 class="text-primary">Motivación</h5>-->
+<!--                                        <h3 class="mb-0">Delivery gratis</h3>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 col-lg-4">-->
+<!--                        <a href="#">-->
+<!--                            <div class="service-item bg-primary rounded border border-primary">-->
+<!--                                <img src="/img/romance_cover.jpg" class="img-fluid rounded-top w-100" alt="" style="max-width: 500px; max-height: 500px; object-fit: cover;">-->
+<!--                                <div class="px-4 rounded-bottom">-->
+<!--                                    <div class="service-content bg-secondary text-center p-4 rounded">-->
+<!--                                        <h5 class="text-white">Romance</h5>-->
+<!--                                        <h3 class="text-white mb-0">Descuento 10$</h3>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Featurs End &ndash;&gt;-->
+
+
+        <!-- Vesitable Shop Start-->
+        <div class="container-fluid vesitable py-5">
+            <div class="container py-5">
+                <h1 class="mb-0">Libros recien agregados</h1>
+                <div class="owl-carousel vegetable-carousel justify-content-center">
+                    <div class="border border-primary rounded position-relative vesitable-item " th:each="book: ${books}" style="height: 450px;">
+                        <div class="vesitable-img" style="height: 50%;">
+                            <a th:href="@{/books/{id}(id=${book.id})}"> <img th:src="${book.cover}" class="img-fluid w-100 rounded-top" alt="Cover libro" style="height: 100%; object-fit: cover;"></a>
+                        </div>
+                        <div th:text="${book.genres[0]}" class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Género</div>
+                        <div class="p-4 rounded-bottom d-flex flex-column justify-content-between" style="height: 50%; overflow: hidden;">
+                            <h4 class="book-title">
+                                <a th:text="${book.title}" th:href="@{/books/{id}(id=${book.id})}">Nombre</a>
+                            </h4>
+                            <p th:text="${book.author}">Autor</p>
+                            <div class="mt-auto">
+                                <p th:text="'$' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="text-dark fs-5 fw-bold mb-2 text-center"></p>
+                                <form th:action="@{/cart/add}" method="post">
+                                    <input type="hidden" name="bookId" th:value="${book.id}" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary w-100">
+                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Vesitable Shop End -->
+
+
+<!--        &lt;!&ndash; Banner Section Start&ndash;&gt;-->
+<!--        <div class="container-fluid banner bg-secondary my-5">-->
+<!--            <div class="container py-5">-->
+<!--                <div class="row g-4 align-items-center">-->
+<!--                    <div class="col-lg-6">-->
+<!--                        <div class="py-4">-->
+<!--                            <h1 class="display-3 text-white">Libro mas vendido</h1>-->
+<!--                            <p class="fw-normal display-3 text-dark mb-4">en nuestra plataforma</p>-->
+<!--                            <p class="mb-4 text-dark">Este libro ha sido el mas vendido en el ultimo periodo</p>-->
+<!--                            <a href="#" class="banner-btn btn border-2 border-white rounded-pill text-light py-3 px-5">COMPRAR</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-6">-->
+<!--                        <div class="position-relative">-->
+<!--                            <img src="/img/scifi_cover.jpg" class="img-fluid w-100 rounded" alt="" style="max-width: 500px; max-height: 500px; object-fit: cover;">-->
+<!--                            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 140px; height: 140px; top: 0; left: 0;">-->
+<!--                                <h1 style="font-size: 100px;">9</h1>-->
+<!--                                <div class="d-flex flex-column">-->
+<!--                                    <span class="h2 mb-0">99$</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Banner Section End &ndash;&gt;-->
+
+
+        <!-- Bestsaler Product Start -->
+        <div class="container-fluid py-5">
+            <div class="container py-5">
+                <div class="text-center mx-auto mb-5" style="max-width: 700px;">
+                    <h1 class="display-4">Libros Bestseller</h1>
+                    <p>Libros más exitosos disponibles dentro de nuestra plataforma.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-6 col-xl-4" th:each="book: ${booksBestseller}">
+                        <div class="p-4 rounded bg-light d-flex flex-column" style="height: 100%;">
+                            <div class="row align-items-center flex-grow-1">
+                                <div class="col-6 d-flex justify-content-center align-items-center">
+                                    <div style="width: 60%; padding-top: 60%; position: relative;">
+                                        <a th:href="@{/books/{id}(id=${book.id})}"><img th:src="${book.cover}" class="img-fluid rounded-circle" alt="" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover;"></a>
+                                    </div>
+
+                                </div>
+                                <div class="col-6 d-flex flex-column h-100">
+                                    <a th:text="${book?.title}" th:href="@{/books/{id}(id=${book.id})}" class="h5 book-title">Nombre</a>
+                                    <div class="d-flex my-3 justify-content-center align-items-center">
+                                        <span class="text-center text-muted small" th:if="${book?.averageRating == 0}">No ha sido valorado aún</span>
+                                        <span th:if="${book?.averageRating > 0}">
+                                            <i class="fas fa-star" th:classappend="${book?.averageRating >= 1 ? 'text-primary' : 'text-muted'}"></i>
+                                            <i class="fas fa-star" th:classappend="${book?.averageRating >= 2 ? 'text-primary' : 'text-muted'}"></i>
+                                            <i class="fas fa-star" th:classappend="${book?.averageRating >= 3 ? 'text-primary' : 'text-muted'}"></i>
+                                            <i class="fas fa-star" th:classappend="${book?.averageRating >= 4 ? 'text-primary' : 'text-muted'}"></i>
+                                            <i class="fas fa-star" th:classappend="${book?.averageRating >= 5 ? 'text-primary' : 'text-muted'}"></i>
+                                        </span>
+                                    </div>
+                                    <h4 th:text="'$ ' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="mb-3 text-center"></h4>
+                                    <div class="mt-auto">
+                                        <form th:action="@{/cart/add}" method="post">
+                                            <input type="hidden" name="bookId" th:value="${book.id}" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3" th:each="book: ${booksBestsellerP2}">
+                        <div class="text-center d-flex flex-column" style="height: 100%;">
+                            <div style="width: 100%; padding-top: 100%; position: relative;">
+                                <a th:href="@{/books/{id}(id=${book.id})}"><img th:src="${book.cover}" class="img-fluid rounded" alt="" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover;"></a>
+                            </div>
+                            <div class="py-4 d-flex flex-column flex-grow-1 justify-content-between">
+                                <a th:text="${book?.title}" th:href="@{/books/{id}(id=${book.id})}" class="h5 book-title">Nombre</a>
+                                <div class="d-flex my-3 justify-content-center align-items-center">
+                                    <span class="text-center text-muted small" th:if="${book?.averageRating == 0}">No ha sido valorado aún</span>
+                                    <span th:if="${book?.averageRating > 0}">
+                                        <i class="fas fa-star" th:classappend="${book?.averageRating >= 1 ? 'text-primary' : 'text-muted'}"></i>
+                                        <i class="fas fa-star" th:classappend="${book?.averageRating >= 2 ? 'text-primary' : 'text-muted'}"></i>
+                                        <i class="fas fa-star" th:classappend="${book?.averageRating >= 3 ? 'text-primary' : 'text-muted'}"></i>
+                                        <i class="fas fa-star" th:classappend="${book?.averageRating >= 4 ? 'text-primary' : 'text-muted'}"></i>
+                                        <i class="fas fa-star" th:classappend="${book?.averageRating >= 5 ? 'text-primary' : 'text-muted'}"></i>
+                                    </span>
+                                </div>
+                                <div class="mt-auto">
+                                    <h4 th:text="'$ ' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}" class="mb-3"></h4>
+                                    <form th:action="@{/cart/add}" method="post">
+                                        <input type="hidden" name="bookId" th:value="${book.id}" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Añadir al carrito
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Bestsaler Product End -->
+
+
+        <!-- Fact Start -->
+        <div class="container-fluid py-3">
+            <div class="container">
+                <div class="bg-light p-5 rounded">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-secondary"></i>
+                                <h4>clientes satisfechos</h4>
+                                <h1 th:text="${ordersQuantity}">1963</h1>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-secondary"></i>
+                                <h4>géneros disponibles</h4>
+                                <h1 th:text="${genresQuantity}">33</h1>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-xl-3">
+                            <div class="counter bg-white rounded p-5">
+                                <i class="fa fa-users text-secondary"></i>
+                                <h4>libros disponibles</h4>
+                                <h1 th:text="${booksQuantity}">789</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fact Start -->
+
+
+        <!--Footer Start-->
+        <div th:replace="~{fragments/footer.html :: footer}">...</div>
+        <!--Footer End-->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/headerfiles.html :: headerfiles}" >...</th:block>
+    <title>Redirection</title>
+</head>
+<body onload="document.forms['redirectForm'].submit()">
+<form th:action="@{/payment/create}" method="post" name="redirectForm">
+    <input type="hidden" name="amount" th:value="${amount}" />
+    <input type="hidden" name="orderId" th:value="${orderId}" />
+</form>
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <h2 class="text-dark text-center">Redireccionando a PayPal, por favor espera...</h2>
+</div>
+</body>
+</html>

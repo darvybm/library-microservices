@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Login - Book House</title>
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png" />
+
+</head>
+<body class="auth-page">
+<div class="bg-overlay"></div>
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Inicio de Sesión</h3></div>
+                            <div class="card-body">
+                                <div th:if="${message}" th:text="${message}"></div>
+                                <form id="loginForm" th:action="@{/login}" method="post" th:object="${loginDTO}">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="username" th:field="*{username}" type="text" placeholder="Username" />
+                                        <label for="username">Nombre de usuario</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="password" th:field="*{password}" type="password" placeholder="Password" />
+                                        <label for="password">Contraseña</label>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                        <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-footer text-center py-3">
+                                <div class="small"><a style="text-decoration: none; color: #0f5132" th:href="@{/register}">¿Necesitas una cuenta? ¡Regístrate!</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="layoutAuthentication_footer">
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Book House 2024</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            // Realiza las validaciones
+            if (username.length < 3 || username.length > 50) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'El nombre de usuario debe tener entre 3 y 50 caracteres.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            var passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=\-_]).*$/;
+            if (!passwordPattern.test(password)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La contraseña debe contener al menos un dígito, una letra minúscula, una letra mayúscula y un carácter especial.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            if (password.length < 6) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La contraseña debe tener al menos 6 caracteres.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Si todas las validaciones pasan, envía el formulario con AJAX
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Inicio de sesión exitoso',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/';
+                    });
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: xhr.responseText || 'Error en el inicio de sesión',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

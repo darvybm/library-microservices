@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, userDTO-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Book House</title>
+</head>
+<body>
+    <div th:fragment="header">
+        <!-- Navbar start -->
+        <div class="container-fluid fixed-top">
+            <div class="container topbar  d-none d-lg-block">
+
+            </div>
+            <div class="container px-0">
+                <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                    <a th:href="@{/}" class="navbar-brand"><img class="img-fluid" src="/assets/LogoBookHouseMarron.png" alt="Logo Book House" style="height: 75px"></a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <a th:href="@{/}" class="nav-item nav-link active">Inicio</a>
+                            <a th:href="@{/books}" class="nav-item nav-link">Catalogo</a>
+                            <a th:href="@{/purchases}" th:if="${user != null}" class="nav-item nav-link">Compras</a>
+                            <a th:href="@{/admin}" th:if="${user?.role == 'ADMIN'}" class="nav-item nav-link">Admin</a>
+                        </div>
+                        <div class="d-flex m-3 me-0">
+                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal">
+                                <i class="fas fa-search text-primary"></i>
+                            </button>
+                            <a th:href="@{/cart}" th:if="${isLoggedIn}"  class="position-relative me-4 my-auto">
+                                <i class="fa fa-shopping-bag fa-2x"></i>
+                                <!-- Carrito de compras contador -->
+                                <span id="cartItemCount" th:text="${cartItemCount}" class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">0</span>
+
+                            </a>
+                            <!-- Validar si existe usuario en la sesión para mostrar inicio de sesión o el usuario -->
+                            <div th:if="${isLoggedIn}">
+                                <div class="nav-item dropdown my-auto">
+                                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user fa-2x"></i>
+                                        <span th:text="${user.username}">Username</span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end bg-secondary rounded-0" aria-labelledby="navbarDropdown">
+                                        <form th:action="@{/logout}" method="post">
+                                            <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                                        </form>
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div th:unless="${isLoggedIn}" class="nav-item my-auto">
+                                <a th:href="@{/login}" class="btn btn-primary me-2 text-white">Iniciar Sesión</a>
+                                <a th:href="@{/register}" class="btn btn-secondary text-white">Registrarse</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+
+        <!-- Modal Search Start -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Busca tu libro deseado</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center">
+                        <form class="input-group w-75 mx-auto d-flex" th:action="@{/books}" method="get">
+                            <input type="search" id="searchInput" name="search" class="form-control p-3" placeholder="Pon un titulo o autor" aria-describedby="search-icon-1">
+                            <button id="search-icon-1" class="input-group-text p-3" type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Search End -->
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchModal = document.getElementById('searchModal');
+            var searchInput = document.getElementById('searchInput');
+
+            searchModal.addEventListener('shown.bs.modal', function () {
+                searchInput.focus();
+            });
+        });
+    </script>
+
+</body>
+</html>

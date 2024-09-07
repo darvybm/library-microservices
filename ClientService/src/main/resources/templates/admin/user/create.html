@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/admin/headerfiles.html :: headerfiles}" >...</th:block>
+    <title>Admin - Book House</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+<div th:replace="~{fragments/admin/top-navbar.html :: top-nav-bar}">...</div>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin/sidenav-menu :: side-nav-menu}">...</div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4" th:text="${isEditing} ? 'Editar Usuario' : 'Crear Usuario'">Usuarios</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}" class="text-dark" style="text-decoration: none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/users}" class="text-dark" style="text-decoration: none">Usuarios</a></li>
+                    <li class="breadcrumb-item active" th:text="${isEditing} ? 'Editar Usuario' : 'Crear Usuario'">Crear Usuario</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-user me-1"></i>
+                        <span th:text="${isEditing} ? 'Editar Usuario' : 'Crear Usuario'"></span>
+                    </div>
+                    <div class="card-body">
+                        <form id="userForm">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="name" name="username" placeholder="Nombre" th:value="${actualUser.username}" required>
+                                <label for="name">Nombre de Usuario</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="mailRegistrationDTO" name="email" placeholder="Correo Electrónico" th:value="${actualUser.email}" required>
+                                <label for="mailRegistrationDTO">Correo Electrónico</label>
+                            </div>
+                            <div class="form-floating mb-3" th:if="${!isEditing}">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                                <label for="password">Contraseña</label>
+                            </div>
+                            <div class="form-floating mb-3" th:if="${!isEditing}">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirmar Contraseña" required>
+                                <label for="confirmPassword">Confirmar Contraseña</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select class="form-control" id="role" name="role" required>
+                                    <option th:each="role : ${roles}" th:value="${role}" th:text="${role}" th:selected="${actualUser.role == role}"></option>
+                                </select>
+                                <label for="role">Rol</label>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary" th:text="${isEditing} ? 'Actualizar Usuario' : 'Crear Usuario'"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div th:replace="~{fragments/admin/footer.html :: footer}">...</div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="/assets/demo/chart-area-demo.js"></script>
+<script src="/assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script src="/js/datatables-simple-demo.js"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#userForm').on('submit', function (e) {
+            e.preventDefault();
+            createUser();
+        });
+    });
+
+    function createUser() {
+        var username = $('#name').val();
+        var email = $('#mailRegistrationDTO').val();
+        var password = $('#password').val();
+        var confirmPassword = $('#confirmPassword').val();
+        var role = $('#role').val();
+
+        // Realiza las validaciones
+        if (username.length < 3 || username.length > 50) {
+            Swal.fire({
+                title: 'Error',
+                text: 'El nombre de usuario debe tener entre 3 y 50 caracteres.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        var passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=\-_]).*$/;
+        if (!passwordPattern.test(password)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La contraseña debe contener al menos un dígito, una letra minúscula, una letra mayúscula y un carácter especial.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (password.length < 6) {
+            Swal.fire({
+                title: 'Error',
+                text: 'La contraseña debe tener al menos 6 caracteres.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Las contraseñas no coinciden.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Por favor, introduce un correo electrónico válido.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        var userData = {
+            username: username,
+            email: email,
+            password: password,
+            role: role
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/admin/users/create',
+            contentType: 'application/json',
+            data: JSON.stringify(userData),
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Usuario creado exitosamente',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Ir al listado'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/admin/users';
+                    }
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al crear el usuario',
+                    text: xhr.responseText,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>
